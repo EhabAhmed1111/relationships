@@ -1,9 +1,6 @@
 package com.luv2code.cruddemo.dao;
 
-import com.luv2code.cruddemo.entity.Course;
-import com.luv2code.cruddemo.entity.Instructor;
-import com.luv2code.cruddemo.entity.InstructorDetail;
-import com.luv2code.cruddemo.entity.Review;
+import com.luv2code.cruddemo.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,4 +142,49 @@ public class InstructorDAOImpl implements InstructorDAO {
         query.setParameter("data", id);
         return query.getSingleResult();
     }
+
+    @Override
+    public Course findCourseAndStudentByCourseIdWithJoinFetch(int id) {
+
+        TypedQuery<Course> query = entityManager.createQuery("select c from Course c "
+                + "JOIN FETCH c.students "
+                + "where c.id= :data", Course.class);
+        query.setParameter("data", id);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public Student findStudentAndCourseByStudentIdWithJoinFetch(int id) {
+        TypedQuery<Student> query = entityManager.createQuery("select s from Student s "
+                + "join fetch s.courses "
+                + "where s.id = :data", Student.class);
+        query.setParameter("data", id);
+        return query.getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public void update(Student tempStudent) {
+        entityManager.merge(tempStudent);
+    }
+
+    @Override
+    @Transactional
+    public void deleteStudentById(int id) {
+
+        //retrieve the student
+        Student student = entityManager.find(Student.class, id);
+        if (student != null) {
+            //get the courses
+            List<Course> courses = student.getCourses();
+            //break the association
+            for (Course course: courses){
+                course.getStudent().remove(student);
+            }
+            //now you can delete student
+            entityManager.remove(student);
+        }
+    }
+
+
 }
