@@ -33,5 +33,9 @@ public interface InstructorDAO {
 
     void update(Course course);
 
+    void saveCourse(Course theCourse);
+
+    Course findCourseAndReviewByCourseId(int id);
+
 
 }

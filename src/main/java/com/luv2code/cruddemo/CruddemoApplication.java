@@ -4,6 +4,7 @@ import com.luv2code.cruddemo.dao.InstructorDAOImpl;
 import com.luv2code.cruddemo.entity.Course;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
+import com.luv2code.cruddemo.entity.Review;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,37 +25,39 @@ public class CruddemoApplication {
     public CommandLineRunner commandLineRunner(InstructorDAOImpl instructorDAO) {
         return runner -> {
 
-//            createInstructor(instructorDAO);
-//
-//            findInstructor(instructorDAO);
-//
-//            deleteInstructor(instructorDAO);
-//
-//            findInstructorDetail(instructorDAO);
-//
-//            deleteInstructorDetail(instructorDAO);
-//
-//            createInstructorWithCourses(instructorDAO);
-//
-//            createInstructorWithCoursesWithStudent(instructorDAO);
-//
-//            findInstructorWithCourses(instructorDAO);
-//
-//            findCourseForInstructor(instructorDAO);
-//
-//            findInstructorWithCoursesJoinFetch(instructorDAO);
-//
-//            updateInstructor(instructorDAO);
-//
-//            updateCourse(instructorDAO);
-//
-//            deleteInstructor(instructorDAO);
-//
-//            deleteListOfCoursesById(instructorDAO);
-
+//            createCourseAndReviews(instructorDAO);
+//            findCourseAndReview(instructorDAO);
             deleteCourse(instructorDAO);
-
         };
+    }
+
+    private void findCourseAndReview(InstructorDAOImpl instructorDAO) {
+        int id = 43;
+
+        Course course = instructorDAO.findCourseAndReviewByCourseId(id);
+        System.out.println(course.getReviews());
+
+    }
+
+    private void createCourseAndReviews(InstructorDAOImpl instructorDAO) {
+        //create course
+        Course course = new Course("Pacman - How To Score One Million Points");
+
+        //add review
+        course.addReview(new Review("Greet course ... Loved it!"));
+        course.addReview(new Review("Cool course, jop well done!"));
+        course.addReview(new Review("What a dumb course, you are an idiot!"));
+
+        //save the course ... and leverage cascade all
+        System.out.println("saving the course");
+
+        System.out.println(course);
+        System.out.println(course.getReviews());
+
+        instructorDAO.saveCourse(course);
+
+        System.out.println("Done!");
+
     }
 
     private void deleteListOfCoursesById(InstructorDAOImpl instructorDAO) {
@@ -68,10 +71,10 @@ public class CruddemoApplication {
     }
 
     private void deleteCourse(InstructorDAOImpl instructorDAO) {
-        int id = 41;
+        int id = 43;
 
         System.out.println("deleting course id: " + id);
-        instructorDAO.deleteCourseById(41);
+        instructorDAO.deleteCourseById(id);
 
         System.out.println("Done!");
     }
