@@ -16,6 +16,15 @@ public class InstructorDetail {
     @Column(name = "hobby")
     private String hobby;
 
+    //add oneToOne annotation
+    //this how we apply bi direction
+    //this will tell hibernate to refer to property in instructor that called instructorDetail
+    @OneToOne(mappedBy = "instructorDetail", cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
+    })
+    private Instructor instructor;
+
+
     public InstructorDetail() {
     }
 
@@ -47,6 +56,15 @@ public class InstructorDetail {
     public void setHobby(String hobby) {
         this.hobby = hobby;
     }
+
+    public Instructor getInstructor() {
+        return instructor;
+    }
+
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
 
     @Override
     public String toString() {
