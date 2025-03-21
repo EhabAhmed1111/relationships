@@ -1,10 +1,7 @@
 package com.luv2code.cruddemo;
 
 import com.luv2code.cruddemo.dao.InstructorDAOImpl;
-import com.luv2code.cruddemo.entity.Course;
-import com.luv2code.cruddemo.entity.Instructor;
-import com.luv2code.cruddemo.entity.InstructorDetail;
-import com.luv2code.cruddemo.entity.Review;
+import com.luv2code.cruddemo.entity.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,11 +21,68 @@ public class CruddemoApplication {
     @Bean
     public CommandLineRunner commandLineRunner(InstructorDAOImpl instructorDAO) {
         return runner -> {
-
-//            createCourseAndReviews(instructorDAO);
-//            findCourseAndReview(instructorDAO);
+//createCourseAndStudents(instructorDAO);
+//            findCourseAndStudentRelated(instructorDAO);
+//            findStudentAndCourseRelated(instructorDAO);
+//            addMoreCoursesForStudent(instructorDAO);
             deleteCourse(instructorDAO);
+            deleteStudent(instructorDAO);
         };
+    }
+
+    private void deleteStudent(InstructorDAOImpl instructorDAO) {
+        int id = 7;
+        instructorDAO.deleteStudentById(id);
+    }
+
+    private void addMoreCoursesForStudent(InstructorDAOImpl instructorDAO) {
+
+        int id = 5;
+        Student student = instructorDAO.findStudentAndCourseByStudentIdWithJoinFetch(id);
+
+//        create more courses
+        Course tempCourse1 = new Course("Rubik's Cube - How to Speed Cube");
+        Course tempCourse2 = new Course("Atari 2600 - Game Development");
+
+        //add courses to student
+        student.addCourse(tempCourse1);
+        student.addCourse(tempCourse2);
+
+        System.out.println("Updating student: " + student);
+        System.out.println("the associated courses: " + student.getCourses());
+
+        instructorDAO.update(student);
+        System.out.println("Done!");
+    }
+
+    private void findStudentAndCourseRelated(InstructorDAOImpl instructorDAO) {
+        int id = 7;
+        Student student = instructorDAO.findStudentAndCourseByStudentIdWithJoinFetch(id);
+        System.out.println("the student: " + student);
+        System.out.println("the associated course: " + student.getCourses());
+    }
+
+    private void findCourseAndStudentRelated(InstructorDAOImpl instructorDAO) {
+        int id = 47;
+        Course course = instructorDAO.findCourseAndStudentByCourseIdWithJoinFetch(id);
+        System.out.println("the course: " + course);
+        System.out.println("the associated student: " + course.getStudent());
+    }
+
+    private void createCourseAndStudents(InstructorDAOImpl instructorDAO) {
+        //create course
+        Course tempCourse = new Course("Pacman - How To Score One Million Points");
+        //create student
+        Student tempStudent1 = new Student("John", "Doe", "john@luv2code.com");
+        Student tempStudent2 = new Student("Mary", "Public", "mary@luv2code.com");
+        //add student to course
+        tempCourse.addStudent(tempStudent1);
+        tempCourse.addStudent(tempStudent2);
+        //save course and associated students by using cascade.PERSIST
+        System.out.println("saving course: " + tempCourse);
+        System.out.println("associated students: " + tempCourse.getStudent());
+        instructorDAO.saveCourse(tempCourse);
+        System.out.println("Done!");
     }
 
     private void findCourseAndReview(InstructorDAOImpl instructorDAO) {
@@ -71,7 +125,7 @@ public class CruddemoApplication {
     }
 
     private void deleteCourse(InstructorDAOImpl instructorDAO) {
-        int id = 43;
+        int id = 50;
 
         System.out.println("deleting course id: " + id);
         instructorDAO.deleteCourseById(id);

@@ -32,10 +32,16 @@ public class Course {
     @JoinColumn(name = "course_id")
     private List<Review> reviews;
 
-//    @OneToMany(mappedBy = "course", cascade = {
-//            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST
-//    })
-//    private List<Student> students;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {
+            CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.DETACH,CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "course_student",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private List<Student> students;
 
     public Course() {
     }
@@ -91,19 +97,20 @@ public class Course {
                 '}';
     }
 
-//    public List<Student> getStudent() {
-//        return students;
-//    }
-//
-//    public void setStudent(List<Student> students) {
-//        this.students = students;
-//    }
-//    public void add(Student student){
-//        if (students == null){
-//            students = new ArrayList<>();
-//        }
-//        students.add(student);
-//        student.setCourse(this);
-//    }
+    public List<Student> getStudent() {
+        return students;
+    }
+
+    public void setStudent(List<Student> students) {
+        this.students = students;
+    }
+
+    public void addStudent(Student student){
+        if (students == null){
+            students = new ArrayList<>();
+        }
+        students.add(student);
+
+    }
 
 }

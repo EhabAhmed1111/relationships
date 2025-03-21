@@ -15,8 +15,7 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
-//    @ManyToOne()
-//    private Course course;
+
 
     public Review() {
     }
